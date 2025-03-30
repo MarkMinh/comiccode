@@ -23,5 +23,7 @@ public partial class User
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
+    public virtual Role? Role { get; set; }
+
     public virtual ICollection<UserToken> UserTokens { get; set; } = new List<UserToken>();
 }
