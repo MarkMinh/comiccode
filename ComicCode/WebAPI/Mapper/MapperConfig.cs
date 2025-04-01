@@ -21,10 +21,22 @@ namespace WebAPI.Mapper
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
 
             CreateMap<Chapter, ChapterAddingDto>().ReverseMap();
-            CreateMap<Chapter, ChapterDto>().ReverseMap();
+            CreateMap<Chapter, ChapterDto>()
+                .ForMember(x => x.Pages, y => y.MapFrom(src => src.Pages))
+                .ReverseMap();
 
             CreateMap<Page, PageDto>();
             CreateMap<Page, PageAddingDto>().ReverseMap();
+
+            CreateMap<Comic, ComicListDto>()
+            .ForMember(dest => dest.Genres,
+                       opt => opt.MapFrom(src => src.ComicGenres.Select(g => g.Genre.GenreName).ToList()));
+
+            CreateMap<Comic, ComicDescriptionDto>()
+            .ForMember(dest => dest.Genres,
+                       opt => opt.MapFrom(src => src.ComicGenres.Select(g => g.Genre.GenreName)
+                       .ToList()))
+            .ForMember(x => x.Author, y => y.MapFrom(src => src.Author.AuthorName));
         }
     }
 }

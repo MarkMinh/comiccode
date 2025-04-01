@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Dto.Chapter;
 using WebAPI.Models;
 
@@ -41,7 +42,7 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ChapterDto>> GetChapterById(int id)
         {
-            var chapter = await _context.Chapters.FindAsync(id);
+            var chapter = await _context.Chapters.Include(x => x.Pages).FirstOrDefaultAsync(a => a.ChapterId == id);
             if (chapter == null)
             {
                 return NotFound();

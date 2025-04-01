@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
 
             if (userLogin == null)
             {
-                return NotFound("Wrong email or password!");
+                return BadRequest("Wrong email or password!");
             }
 
             var token = Common.GenerateJwtToken(_configuration, userLogin);
@@ -138,6 +138,29 @@ namespace WebAPI.Controllers
             _context.SaveChanges();
 
             return Ok("Password changed successfully.");
+        }
+
+        [HttpGet("check-login")]
+        public IActionResult CheckLogin()
+        {
+            var user = Common.IsCookieJwtValid(HttpContext, _configuration);
+            if (user == null)
+            {
+                return Unauthorized("Bạn chưa đăng nhập");
+            }
+
+            return Ok(new { isAuthenticated = true, message = "Bạn đã đăng nhập!" });
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            if (Request.Cookies["JwtToken"] != null)
+            {
+                Response.Cookies.Delete("JwtToken");
+            }
+
+            return Ok(new { message = "Đăng xuất thành công!" });
         }
     }
 }

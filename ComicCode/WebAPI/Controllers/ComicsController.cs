@@ -21,19 +21,40 @@ namespace WebAPI.Controllers
             _configuration = configuration;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllComics()
+        {
+            var comics = await _context.Comics
+                               .Include(c => c.ComicGenres)
+                               .ThenInclude(cg => cg.Genre)
+                               .ToListAsync();
+
+            if (!comics.Any()) // Kiểm tra danh sách có dữ liệu không
+            {
+                return NotFound("Comic not found.");
+            }
+
+            var comicList = _mapper.Map<List<ComicListDto>>(comics); // Ánh xạ sang DTO
+
+            return Ok(comicList);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetComicById(int id)
         {
             var comic = await _context.Comics
-                .Include(c => c.Author)
+                               .Include(c => c.ComicGenres)
+                               .ThenInclude(cg => cg.Genre)
+                               .Include(a => a.Author)
                 .FirstOrDefaultAsync(c => c.ComicId == id);
 
             if (comic == null)
             {
                 return NotFound($"Comic with ID {id} not found.");
             }
+            var comicReturn = _mapper.Map<ComicDescriptionDto>(comic);
 
-            return Ok(comic);
+            return Ok(comicReturn);
         }
 
         [HttpPost]

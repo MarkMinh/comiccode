@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using WebAPI.Dto.Page;
 using WebAPI.Models;
 
@@ -7,7 +9,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PagesController : ControllerBase
+    public class PagesController : ODataController
     {
         private readonly Prn231ComicCodeContext _context;
         private readonly IMapper _mapper;
@@ -62,6 +64,14 @@ namespace WebAPI.Controllers
             _context.Pages.AddRange(pages);
             await _context.SaveChangesAsync();
 
+            return Ok(pages);
+        }
+
+        [HttpGet]
+        [EnableQuery]
+        public IActionResult GetAllPages()
+        {
+            var pages = _context.Pages.ToList();
             return Ok(pages);
         }
     }

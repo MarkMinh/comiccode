@@ -1,4 +1,6 @@
-﻿namespace WebAPI.Dto.Chapter
+﻿using WebAPI.Dto.Page;
+
+namespace WebAPI.Dto.Chapter
 {
     public class ChapterDto
     {
@@ -9,5 +11,7 @@
         public DateTime? CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
         public bool? IsActive { get; set; }
+
+        public List<PageDto> Pages { get; set; }
     }
 }
